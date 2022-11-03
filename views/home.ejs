@@ -1,0 +1,21 @@
+<%- include("partials/header")%>
+
+<h1>Wines I don't like</h1>
+
+<div>
+    <form action="/" method="post">
+        <input type="text" name="wine" placeholder="Enter the wine you don't like." autocomplete="off">
+        <button type="submit">Add</button>
+    </form>
+</div>
+
+<div>
+    <% for (var i=0; i<dislikeList.length; i++) { %>
+        <div>
+            <p><%= dislikeList[i]%></p>
+        </div>
+        <% } %>
+</div>
+
+
+<%- include("partials/footer")%>
