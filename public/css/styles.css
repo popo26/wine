@@ -9,11 +9,10 @@ body {
     color: #333;
 
     /* background-color: #e499f0; */
-    /* background-color: #520524;
-    background-image: url("https://www.transparenttextures.com/patterns/green-fibers.png"); */
+    background-color: black;
+    background-image: url("https://www.transparenttextures.com/patterns/green-fibers.png"); 
 
-    background-color: #660000;
-background-image: url("https://www.transparenttextures.com/patterns/hexellence.png");
+ 
 }
 
 main{
@@ -27,7 +26,8 @@ footer {
 
 .title {
     margin:20px auto 20px;
-    color: white;
+    color: #660000;
+    font-family: 'Pacifico', cursive;
 }
 
 .form-div {
@@ -37,8 +37,10 @@ footer {
     border-radius: 20px;
     padding:40px;
 
-    background-color: #363536;
-    background-image: url("https://www.transparenttextures.com/patterns/grey-washed-wall.png");
+    /* background-color: #363536;
+    background-image: url("https://www.transparenttextures.com/patterns/grey-washed-wall.png"); */
+    background-color: #660000;
+    background-image: url("https://www.transparenttextures.com/patterns/hexellence.png");
 }
 
 .each-form{
@@ -73,3 +75,20 @@ footer {
 .delete-button:hover {
     color: white;
     background-color: purple;
+}
+
+/* landing.ejs */
+.landing-div {
+    width:70%;
+    margin:auto;
+    padding:60px;
+    color:white;
+}
+
+/* register.ejs */
+.register-div{
+    width:400px;
+    margin:auto;
+    padding:60px;
+    color:white;
+}
