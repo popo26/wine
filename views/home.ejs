@@ -1,21 +1,51 @@
 <%- include("partials/header")%>
 
-<h1>Wines I don't like</h1>
 
-<div>
-    <form action="/" method="post">
-        <input type="text" name="wine" placeholder="Enter the wine you don't like." autocomplete="off">
-        <button type="submit">Add</button>
+<h1 class="title">Wines I don't like</h1>
+
+
+<div class="form-div">
+    <form action="/" method="post" class="row">
+        <div class="col-12 each-form">
+            <input type="text" name="wineName" placeholder="Name of wine you don't like." autocomplete="off"
+                class="form-control">
+        </div>
+        <div class="col-6 each-form">
+            <input type="text" name="wineType" , placeholder="Wine type" class="form-control">
+        </div>
+        <div class="col-6 each-form">
+            <input type="text" name="winePrice" , placeholder="How much?" class="form-control">
+        </div>
+        <div class="col-12 each-form">
+            <input type="text" name="wineComment" , placeholder="How bad was it?" class="form-control">
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-dark btn-lg add-button">Add</button>
+        </div>
     </form>
 </div>
 
-<div>
-    <% for (var i=0; i<dislikeList.length; i++) { %>
-        <div>
-            <p><%= dislikeList[i]%></p>
+<div class="results-div">
+    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-12 g-4 each-column">
+    <% dislikeList.forEach(function(wine){ %>
+    
+        <div class="col">
+            <form action="/delete" method="post">
+            <div class="card each-card" style="width: 16rem;">
+                <div class="card-body">
+                    <h4 class="card-title"><%= wine.name %></h4>
+                    <h6 class="card-subtitle mb-2 text-muted"><%= wine.type %></h6>
+                    <h6 class="card-subtitle mb-2 text-muted">$<%= wine.price %></h6>
+                    <p class="card-text"><%= wine.comment %></p>
+                    <input type="hidden" name="wineId" value="<%=wine.id%>">
+                    <button type="submit" class="btn btn-outline-light delete-button">X</button>
+                </div>
+            </div>
+        </form>
         </div>
-        <% } %>
-</div>
+        <% }) %>
+    </div>
+   
 
 
-<%- include("partials/footer")%>
+    <%- include("partials/footer")%>
