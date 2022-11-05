@@ -19,6 +19,7 @@
         <div class="col-12 each-form">
             <input type="text" name="wineComment" , placeholder="How bad was it?" class="form-control" autocomplete="off">
         </div>
+        
         <div class="col-12">
             <button type="submit" class="btn btn-dark btn-lg add-button">Add</button>
         </div>
@@ -38,6 +39,7 @@
                     <h6 class="card-subtitle mb-2 text-muted">$<%= wine.price %></h6>
                     <p class="card-text"><%= wine.comment %></p>
                     <input type="hidden" name="wineId" value="<%=wine.id%>">
+                   
                     <button type="submit" class="btn btn-outline-light delete-button">X</button>
                 </div>
             </div>
