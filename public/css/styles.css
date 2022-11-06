@@ -80,7 +80,7 @@ footer {
 /* landing.ejs */
 .landing-div {
     width:70%;
-    margin:auto;
+    margin:10% auto auto auto;
     padding:60px;
     color:white;
 }

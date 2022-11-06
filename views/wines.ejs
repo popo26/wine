@@ -4,8 +4,9 @@
 <h1 class="title">Wines I don't like</h1>
 
 
+
 <div class="form-div">
-    <form action="/wines" method="post" class="row">
+    <form action="/wines/<%= userId %>" method="post" class="row">
         <div class="col-12 each-form">
             <input type="text" name="wineName" placeholder="Name of wine you don't like." autocomplete="off"
                 class="form-control">
@@ -19,6 +20,7 @@
         <div class="col-12 each-form">
             <input type="text" name="wineComment" , placeholder="How bad was it?" class="form-control" autocomplete="off">
         </div>
+        <input type="hidden" name="userId" value="<%=userId%>">
         
         <div class="col-12">
             <button type="submit" class="btn btn-dark btn-lg add-button">Add</button>
@@ -39,6 +41,8 @@
                     <h6 class="card-subtitle mb-2 text-muted">$<%= wine.price %></h6>
                     <p class="card-text"><%= wine.comment %></p>
                     <input type="hidden" name="wineId" value="<%=wine.id%>">
+                    <input type="hidden" name="userId" value="<%=userId%>">
+                    
                    
                     <button type="submit" class="btn btn-outline-light delete-button">X</button>
                 </div>

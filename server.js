@@ -2,11 +2,16 @@ require('dotenv').config();
 const secret = process.env.SECRET;
 
 const express = require("express");
+const cookieParser = require("cookie-parser");
+
 const bodyParser = require("body-parser");
 const ejs = require("ejs")
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const _ = require("lodash");
+const oneDay = 1000 * 60 * 60 * 24;
+
+
 
 // Authentication1-position important
 const session = require('express-session');
@@ -15,21 +20,25 @@ const passportLocalMongoose = require("passport-local-mongoose");
 
 const app = express();
 
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json()); //Without this line it populate empty item at /wines
 app.set("view engine", 'ejs');
 app.use(express.static("public"));
 
+app.use(bodyParser.json()); //Without this line it populate empty item at /wines
+app.use(bodyParser.urlencoded({extended:true}));
+
+
+app.use(cookieParser());
 // Authentication2 - position important
 app.use(session({
     secret: secret,
-    resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    resave:false,
+    cookie: { maxAge: oneDay },
+
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // +++++++++++++++create db if it exists, it will just use it+++++++++++++++
 mongoose.connect("mongodb://localhost:27017/wineDB")
@@ -72,6 +81,7 @@ const User = mongoose.model("User", userSchema);
 const Wine = mongoose.model("Wine", wineSchema);
 
 const dislikes = [];
+const loggedInUser = "";
 
 app.get("/", function(req, res){
     console.log("Home page");
@@ -89,11 +99,6 @@ app.post("/register", function(req, res){
         email: req.body.username,
         password: req.body.password
     });
-
-    console.log(req.body.username);
-    console.log(req.body.password);
-    console.log(newUser);
-    console.log("Posting register");
 
     newUser.save(function(err){
         if (err){
@@ -116,16 +121,16 @@ app.post("/login", function(req, res){
     const username = req.body.username;
     const password = req.body.password;
 
-    console.log(username);
-    console.log(password);
-
     User.findOne({email: username}, function(err, foundUser){
         if(err){
             console.log(err);
         } else {
             if (foundUser.length !== 0 && foundUser.password === password) {
                 console.log("user exists");
-                res.redirect("/wines");
+                req.session.user = foundUser;
+                // console.log(foundUser);
+                id = req.session.user._id;
+                res.redirect("/wines/" + id);
             } else {
                 console.log("user doesn't exist")
                 res.redirect("/register"); 
@@ -134,45 +139,58 @@ app.post("/login", function(req, res){
     });
 });
 
-app.get("/wines", function(req, res){
+app.get("/wines/:id", function(req, res){
 
-    console.log("Wine GET page")
-    console.log(req.user)
-    
-    Wine.find({}, function(err, foundWines){
+    console.log("Wine GET page");
+    userId = req.params.id;
+    User.findOne({_id: userId}, function(err, foundUser){
         if(err){
             console.log(err);
         } else {
-            res.render("wines", {dislikeList: foundWines});
+                // console.log("here");
+                req.user = foundUser;
+            }
+        });
+
+    Wine.find({user:userId}, function(err, foundWines){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("wines", {dislikeList: foundWines, userId:userId});
         }  
     });  
 });
 
-app.post("/wines", function(req, res){
+app.post("/wines/:id", function(req, res){
     const wineName = _.capitalize(req.body.wineName);
     const wineType = req.body.wineType;
     const wineComment = req.body.wineComment;
     const winePrice = req.body.winePrice;
+    const userId = req.body.userId;
 
     const wine = new Wine({
         name: wineName,
         type: wineType,
         comment: wineComment,
         price: winePrice,
+        user:userId
     })
 
     wine.save()
 
-    res.redirect("/wines");
+    res.redirect("/wines/" + userId);
 })
 
 app.post("/delete", function(req, res){
     const deleteWineId = req.body.wineId;
+    const userId = req.body.userId;
 
     Wine.findByIdAndRemove(deleteWineId, function(err){
         if (!err) {
             console.log("Removed selected wine.");
-            res.redirect("/wines");
+            res.redirect("/wines/" + userId);
+        } else {
+            console.log(err);
         }
     });
 });
