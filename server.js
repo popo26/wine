@@ -1,5 +1,6 @@
 require('dotenv').config();
 const secret = process.env.SECRET;
+const dbUrl = process.env.ATLAS_URL
 
 const express = require("express");
 const cookieParser = require("cookie-parser");
@@ -37,27 +38,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // +++++++++++++++create db if it exists, it will just use it+++++++++++++++
-mongoose.connect("mongodb://localhost:27017/wineDB")
+// mongoose.connect("mongodb://localhost:27017/wineDB")
+mongoose.connect(dbUrl);
+
 
 
 // +++++++++++++++ create new schema and add mongoose's built-in validation +++++++++++++++
 //https://mongoosejs.com/docs/validation.html
 const userSchema = new mongoose.Schema({
-    // email: {
-    //     type: String,
-    //     required: [true, "Email is required."]
-    // },
-    // password: {
-    //     type: String,
-    //     required: [true, "Password is required."]
-    // },
-
-    username: {
+      username: {
         type: String,
         unique:true,
         required: [true, "Email is required."]
     },
-    password: String,
+    password: String, //passport will check anyway so no need to require.
 });
 
 const wineSchema = new mongoose.Schema({
