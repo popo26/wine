@@ -11,6 +11,8 @@ const Schema = mongoose.Schema;
 const _ = require("lodash");
 const oneDay = 1000 * 60 * 60 * 24;
 const alert = require("alert");
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const findOrCreate = require("mongoose-findorcreate");
 
 // Authentication1-position important
 const session = require('express-session');
@@ -46,12 +48,14 @@ mongoose.connect(dbUrl);
 // +++++++++++++++ create new schema and add mongoose's built-in validation +++++++++++++++
 //https://mongoosejs.com/docs/validation.html
 const userSchema = new mongoose.Schema({
-      username: {
-        type: String,
-        unique:true,
-        required: [true, "Email is required."]
-    },
+    // username: {
+    //     type: String,
+    //     unique:true,
+    //     required: [true, "Email is required."]
+    // },
+    username: String,
     password: String, //passport will check anyway so no need to require.
+    googleId: String
 });
 
 const wineSchema = new mongoose.Schema({
@@ -70,6 +74,7 @@ const wineSchema = new mongoose.Schema({
 
 // Authentication3 - position important
 userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(findOrCreate);
 
 // Authentication4 - position important
 //+++++++++++++++create model+++++++++++++++
@@ -82,8 +87,35 @@ passport.use(User.createStrategy());
 //     usernameField: 'email',
 //     passwordField: 'password'
 // }, User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+
+//This works only for local strategy (comes from passport-local-mongoose)
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
+
+//This works for all strategies not just for local strategy
+passport.serializeUser(function(user, done){
+    done(null, user.id);
+});
+passport.deserializeUser(function(id, done){
+    User.findById(id, function(err, user){
+        done(err, user);
+    });
+});
+
+//Google OAuth2.0
+passport.use(new GoogleStrategy({
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: process.env.CALLBACK_URL,
+    userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    console.log(profile);
+    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
 
 
 const dislikes = [];
@@ -94,6 +126,25 @@ app.get("/", function(req, res){
     const title = "Home";
     res.render("home", {title:title});
 });
+
+app.route('/auth/google')
+  .get(passport.authenticate('google', {
+    scope: ['profile']
+  }));
+
+app.get('/auth/google/wines',
+passport.authenticate('google', {failureRedirect:'/login'}),
+function(req, res){
+    res.redirect("/wines");
+});
+
+//Step added for google oath redirection to work to /wines/:id
+app.get("/wines", function(req,res){
+    console.log("Wines page without ID");
+    user = req.user;
+    id = req.user.id;
+    res.redirect("/wines/" + id);
+})
 
 
 app.get("/register", function(req, res){
