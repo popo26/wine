@@ -1,9 +1,13 @@
-<%- include("partials/header")%>
+<%- include("partials/header")%> 
 
+<nav class="navbar">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1"></span>
+      <a class="btn btn-outline-danger btn-lg" href="/logout" role="button">LogOut</a>
+    </div>
+  </nav>
 
 <h1 class="title">Wines I don't like</h1>
-
-
 
 <div class="form-div">
     <form action="/wines/<%= userId %>" method="post" class="row">

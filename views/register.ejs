@@ -1,22 +1,29 @@
 <%- include("partials/header")%>
 
+<nav class="navbar">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1"></span>
+    <a class="btn btn-secondary btn-lg" href="/login" role="button">LogIn</a>
+  </div>
+</nav>
+
 <div class="register-div">
-  <h1>Register</h1>
+  <!-- <h1>Register</h1> -->
 <form action="/register" method="post">
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Email address</label>
+      <label for="email" class="form-label">Email address</label>
       <input type="email" name="username" class="form-control" aria-describedby="emailHelp" >
-      <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+      <div id="emailHelp" class="form-text">Fake email is good.</div>
     </div>
     <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Password</label>
-      <input type="password" name="password" class="form-control" >
+      <label for="password" class="form-label">Password</label>
+      <input type="password" name="password" class="form-control" placeholder="First time">
     </div>
-    <!-- <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Confirm Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1">
-      </div> -->
-    <button type="submit" class="btn btn-primary">Register</button>
+    <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <input type="password" name="confirmPassword" class="form-control" placeholder="Second time">
+      </div>
+    <button type="submit" class="btn btn-light">Register</button>
   </form>
 </div>
 
