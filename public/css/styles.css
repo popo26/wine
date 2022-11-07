@@ -30,6 +30,10 @@ footer {
     font-family: 'Pacifico', cursive;
 }
 
+.sub-title {
+    color:cornflowerblue;
+}
+
 .form-div {
     width:400px;
     margin:auto;

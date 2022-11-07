@@ -93,45 +93,24 @@ passport.deserializeUser(User.deserializeUser());
 
 
 const dislikes = [];
-// const loggedInUser = "";
+const title = "";
 
 app.get("/", function(req, res){
     console.log("Home page");
-    res.render("home");
+    const title = "Home";
+    res.render("home", {title:title});
 });
 
 
 app.get("/register", function(req, res){
     console.log("Register page");
-    res.render("register");
+    const title = "Register";
+    res.render("register", {title:title});
 });
 
 
 app.post("/register", function(req, res){
-    // const newUser = new User({
-    //     email: req.body.username,
-    //     password: req.body.password
-    // });
-
-    // User.findOne({email:req.body.username}, function(err, foundUser){
-    //     if(err){
-    //         console.log(err);
-    //     } else {
-    //         if (!foundUser && req.body.password === req.body.confirmPassword ){
-    //             newUser.save(function(err){
-    //                 if (err){
-    //                     console.log(err);
-    //                 }else {
-    //                     res.render("login");
-    //                 }
-    //             });
-    //         } else {
-    //             alert("This email address has been taken.");
-    //             res.redirect("/register");
-    //         }
-    //     }
-    // })
-
+   
     User.findOne({username:req.body.username}, function(err, foundUser){
         if (err) {
             console.log(err);
@@ -150,128 +129,58 @@ app.post("/register", function(req, res){
                         })
                     }
                 })
+            } else if (!foundUser && req.body.password !== req.body.confirmPassword) {
+                alert("Passwords don't match. Try again.")
             } else {
                 alert("This email address has been taken.");
                 res.redirect("/register");   
             }
         }
     });
-        
-
-    //working one//
-    // User.findOne({username:req.body.username}, function(err, foundUser){
-    //     if(err){
-    //         console.log(err);
-    //     } else {
-    //         User.register({username: req.body.username }, req.body.password, function(err, foundUser){
-    //                 if(err){
-    //                    console.log(err);
-    //                    res.redirect("/register");
-    //                } else {
-    //                 req.session.user = foundUser;
-    //                 // console.log(foundUser);
-    //                 id = req.session.user._id;
-    //                 passport.authenticate("local")(req, res, function(){
-    //                 res.redirect('/wines/' + id);
-    //             })
-    //         }
-    //     })
-    //     }
-    // });
-
-  
-
-
-
-
-    // User.register({username: req.body.username }, req.body.password, function(err, user){
-    //     if(err){
-    //         console.log(err);
-    //         res.redirect("/register");
-    //     } else {
-    //         user = req.session.user;
-    //         passport.authenticate("local")(req, res, function(){
-    //             res.redirect('/wines/' + user.id);
-    //         })
-    //     }
-    // })
 });
 
 
 app.get("/login", function(req,res) {
     console.log("Login page");
-    res.render("login");
+    const title = "Login";
+    res.render("login", {title:title});
 });
 
 
-app.post("/login", function(req, res){
+app.post("/login", function(req, res, next){
 
     console.log("Posting login");
 
-    // const username = req.body.username;
-    // const password = req.body.password;
+    const user = new User({
+        username:req.body.username,
+        password: req.body.password
+    });
 
-    // User.findOne({email: username}, function(err, foundUser){
-    //     if(err){
-    //         console.log(err);
-    //     } else {
-    //         if (foundUser.length !== 0 && foundUser.password === password) {
-    //             console.log("user exists");
-    //             req.session.user = foundUser;
-    //             // console.log(foundUser);
-    //             id = req.session.user._id;
-    //             res.redirect("/wines/" + id);
-    //         } else if (foundUser.length !== 0 && foundUser.password !== password){
-    //             alert("Incorrect password.");
-    //             res.redirect("/login"); 
-    //         } else {
-    //             console.log("user doesn't exist")
-    //             res.redirect("/register"); 
-    //         }
-    //     }
-    // });
-
-// const user = new User({
-//     email:req.body.username,
-//     password: req.body.password
-// })
-
-const user = new User({
-    username:req.body.username,
-    password: req.body.password
-});
-
-//passport
-req.login(user, function(err){
-    if (err) {
-        console.log(err);
-    } else {
+    passport.authenticate('local', function(err, user, info) {
+        
+        if (err) { 
+            return next(err); 
+        }
+        if (!user) { 
+            alert("Invalid email or password. Try again! Or not registered yet?")
+            return res.redirect('/login'); 
+        }
+        req.logIn(user, function(err) {
+        if (err) { 
+            return next(err); 
+        }
         req.session.user = user;
         id = user._id;
-        passport.authenticate("local")(req, res, function(){
-            res.redirect("/wines/" + id);
-        })
-    }
-})
-
+        return res.redirect('/wines/' + id);
+        });
+    })(req, res, next);
 });
 
 
 app.get("/wines/:id", function(req, res){
 
-    // User.findOne({_id:req.session.user_id, function(err, foundUser){
-    //     if(err){
-    //         console.log(err);
-    //     } else {
-    //         req.session.user = foundUser;
-    //         console.log(foundUser);
-    //         console.log(req.session.user);
-
-    //         id = req.session.user;
-    //     }}
-    // });
-
     console.log("Wine GET page");
+    const title = "Wine";
 
     userId = req.params.id;
     console.log(userId);
@@ -289,31 +198,12 @@ app.get("/wines/:id", function(req, res){
             if(err){
                 console.log(err);
             } else {
-                res.render("wines", {dislikeList: foundWines, userId:userId});
+                res.render("wines", {dislikeList: foundWines, userId:userId, title:title});
             } 
         });
     } else {
       res.redirect("/login");
-    }  
-   
-    // User.findOne({_id: userId}, function(err, foundUser){
-    //     if(err){
-    //         console.log(err);
-    //     } else {
-    //             req.user = foundUser;
-    //         }
-    //     });
-
-    // Wine.find({user:userId}, function(err, foundWines){
-    //     if(err){
-    //         console.log(err);
-    //     } else {
-    //         res.render("wines", {dislikeList: foundWines, userId:userId});
-           
-    //     }  
-    // });  
-
-    
+    }      
 });
 
 
@@ -352,6 +242,7 @@ app.post("/delete", function(req, res){
     });
 });
 
+
 app.get('/logout', function(req, res, next) {
     req.logout(function(err) {
       if (err) { return next(err); }
@@ -360,13 +251,18 @@ app.get('/logout', function(req, res, next) {
   });
 
 
-
 app.listen(3000, function(){
     console.log ("Server started on port 3000")
 });
 
 
-/* ===================== MongoDB CRUD Reference =====================
+
+
+
+/* MY REFERENCE:
+
+
+===================== MongoDB CRUD Reference =====================
 
 +++++++++++++++create wine document - single creation+++++++++++++++
 const wine = new Wine ({
