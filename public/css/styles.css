@@ -31,7 +31,9 @@ footer {
 }
 
 .sub-title {
-    color:cornflowerblue;
+    /* color:cornflowerblue; */
+    /* color:#abad6b; */
+    color:#946e80;
 }
 
 .form-div {
@@ -57,14 +59,22 @@ footer {
 }
 
 .each-card {
-    background-color:wheat;
+    /* background-color:wheat; */
     border-radius: 20px;
     margin:auto;
+    width: auto;
+    background-color: #948162;
+    background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
 }
 
 .each-column {
     margin:auto;
-    padding:40px;
+    padding:26px;
+}
+
+.wine-name {
+    font-weight: bold;
+    
 }
 
 .add-button {
@@ -72,13 +82,13 @@ footer {
 }
 
 .delete-button {
-    color: red;
+    color:#333;
     border:transparent;
 }
 
 .delete-button:hover {
     color: white;
-    background-color: purple;
+    background-color:#660000;
 }
 
 /* landing.ejs */
@@ -95,4 +105,33 @@ footer {
     margin:auto;
     padding:60px;
     color:white;
+}
+
+/* Responsiveness */
+
+/* mobile */
+@media only screen and (max-width: 430px){
+.landing-div {
+    width:100%;
+    margin:30% auto auto auto;
+    padding:20px;
+    color:white;
+}
+
+.title {
+    margin:10px auto 10px;
+    color: #660000;
+    font-family: 'Pacifico', cursive;
+    font-size:xx-large;
+}
+
+.sub-title {
+    color:cornflowerblue;
+    font-size:small;
+}
+}
+
+/* tablet */
+@media only screen and (max-width: 800px) and (min-width:431px) {
+
 }

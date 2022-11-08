@@ -1,11 +1,11 @@
-<%- include("partials/header")%> 
+<%- include("partials/header")%>
 
 <nav class="navbar">
     <div class="container-fluid">
-      <span class="navbar-brand mb-0 h1"></span>
-      <a class="btn btn-outline-danger btn-lg" href="/logout" role="button">LogOut</a>
+        <span class="navbar-brand mb-0 h1"></span>
+        <a class="btn btn-outline-danger btn-lg" href="/logout" role="button">LogOut</a>
     </div>
-  </nav>
+</nav>
 
 <h1 class="title">Wines I don't like</h1>
 
@@ -22,40 +22,41 @@
             <input type="text" name="winePrice" , placeholder="How much?" class="form-control" autocomplete="off">
         </div>
         <div class="col-12 each-form">
-            <input type="text" name="wineComment" , placeholder="How bad was it?" class="form-control" autocomplete="off">
+            <input type="text" name="wineComment" , placeholder="How bad was it?" class="form-control"
+                autocomplete="off">
         </div>
         <input type="hidden" name="userId" value="<%=userId%>">
-        
+
         <div class="col-12">
             <button type="submit" class="btn btn-dark btn-lg add-button">Add</button>
         </div>
     </form>
 </div>
 
-<div class="results-div">
-    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-12 g-4 each-column">
-    <% dislikeList.forEach(function(wine){ %>
-    
+<div class="container results-div">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 each-column">
+        <% dislikeList.forEach(function(wine){ %>
+
         <div class="col">
             <form action="/delete" method="post">
-            <div class="card each-card" style="width: 16rem;">
-                <div class="card-body">
-                    <h4 class="card-title"><%= wine.name %></h4>
-                    <h6 class="card-subtitle mb-2 text-muted"><%= wine.type %></h6>
-                    <h6 class="card-subtitle mb-2 text-muted">$<%= wine.price %></h6>
-                    <p class="card-text"><%= wine.comment %></p>
-                    <input type="hidden" name="wineId" value="<%=wine.id%>">
-                    <input type="hidden" name="userId" value="<%=userId%>">
-                    
-                   
-                    <button type="submit" class="btn btn-outline-light delete-button">X</button>
+                <div class="card each-card">
+                    <div class="card-body">
+                        <h4 class="card-title wine-name"><%= wine.name %></h4>
+                        <h6 class="card-subtitle mb-2 text-muted"><%= wine.type %></h6>
+                        <h6 class="card-subtitle mb-2 text-muted">$<%= wine.price %></h6>
+                        <p class="card-text"><%= wine.comment %></p>
+                        <input type="hidden" name="wineId" value="<%=wine.id%>">
+                        <input type="hidden" name="userId" value="<%=userId%>">
+
+
+                        <button type="submit" class="btn btn-outline-light delete-button"><i class="fa-sharp fa-solid fa-trash-arrow-up"></i></button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
         </div>
         <% }) %>
     </div>
-   
+
 
 
     <%- include("partials/footer")%>
