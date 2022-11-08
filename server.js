@@ -12,6 +12,8 @@ const _ = require("lodash");
 const oneDay = 1000 * 60 * 60 * 24;
 const alert = require("alert");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
+// const FacebookStrategy = strategy.Strategy;
 const findOrCreate = require("mongoose-findorcreate");
 
 // Authentication1-position important
@@ -117,6 +119,28 @@ passport.use(new GoogleStrategy({
   }
 ));
 
+//Facebook Oauth
+passport.use(
+    new FacebookStrategy(
+      {
+        clientID: process.env.FACEBOOK_CLIENT_ID,
+        clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+        callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+        profileFields: ["email"]
+      },
+      function(accessToken, refreshToken, profile, done) {
+        const { email, first_name, last_name } = profile._json;
+        const userData = {
+          email,
+          firstName: first_name,
+          lastName: last_name
+        };
+        new userModel(userData).save();
+        done(null, profile);
+      }
+    )
+  );
+
 
 const dislikes = [];
 const title = "";
@@ -132,13 +156,25 @@ app.route('/auth/google')
     scope: ['profile']
   }));
 
+app.route('/auth/facebook')
+.get(passport.authenticate('facebook', {
+scope: ['profile']
+}));
+
 app.get('/auth/google/wines',
 passport.authenticate('google', {failureRedirect:'/login'}),
 function(req, res){
     res.redirect("/wines");
 });
 
-//Step added for google oath redirection to work to /wines/:id
+app.get('/auth/facebook/wines',
+passport.authenticate('facebook', {failureRedirect:'/login'}),
+function(req, res){
+    res.redirect("/wines");
+});
+
+
+//Step added for Oath redirection to work to /wines/:id
 app.get("/wines", function(req,res){
     console.log("Wines page without ID");
     user = req.user;
