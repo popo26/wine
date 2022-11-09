@@ -37,14 +37,12 @@ footer {
 }
 
 .form-div {
-    width:400px;
+    max-width:40%;
+    min-width: 320px;
     margin:auto;
-    background-color: blanchedalmond;
+    /* background-color: blanchedalmond; */
     border-radius: 20px;
     padding:40px;
-
-    /* background-color: #363536;
-    background-image: url("https://www.transparenttextures.com/patterns/grey-washed-wall.png"); */
     background-color: #660000;
     background-image: url("https://www.transparenttextures.com/patterns/hexellence.png");
 }
@@ -53,13 +51,21 @@ footer {
     margin-bottom:14px;
 }
 
+.search-div {
+    max-width:40%;
+    min-width: 320px;
+    margin:auto;
+    /* background-color: blanchedalmond; */
+    /* border-radius: 20px; */
+    padding:40px;
+}
+
 .results-div{
     width:80%;
     margin:auto;
 }
 
 .each-card {
-    /* background-color:wheat; */
     border-radius: 20px;
     margin:auto;
     width: auto;

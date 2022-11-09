@@ -16,14 +16,13 @@
                 class="form-control">
         </div>
         <div class="col-6 each-form">
-            <input type="text" name="wineType" , placeholder="Wine type" class="form-control">
+            <input type="text" name="wineType" placeholder="Wine type" class="form-control">
         </div>
         <div class="col-6 each-form">
-            <input type="text" name="winePrice" , placeholder="How much?" class="form-control" autocomplete="off">
+            <input type="text" name="winePrice" placeholder="How much?" class="form-control" autocomplete="off">
         </div>
         <div class="col-12 each-form">
-            <input type="text" name="wineComment" , placeholder="How bad was it?" class="form-control"
-                autocomplete="off">
+            <input type="text" name="wineComment" placeholder="How bad was it?" class="form-control" autocomplete="off">
         </div>
         <input type="hidden" name="userId" value="<%=userId%>">
 
@@ -31,6 +30,20 @@
             <button type="submit" class="btn btn-dark btn-lg add-button">Add</button>
         </div>
     </form>
+</div>
+
+<div class="search-div">
+
+    <form action="/wines/<%= userId %>/find"  method="post" class="row">
+    <input type="search" name="searchWine" class="form-control" aria-describedby="searchField"
+        placeholder="Search Your List.">
+    <input type="hidden" name="userId" value="<%=userId%>">
+    <div class="col-12">
+        <button type="submit" class="btn btn-outline-light btn-lg add-button">Search</button>
+        <a href="/wines/<%= userId %>" class="btn btn-outline-light btn-lg add-button" role="button">List All</a>
+    </div>
+    </form>
+    
 </div>
 
 <div class="container results-div">
@@ -49,7 +62,8 @@
                         <input type="hidden" name="userId" value="<%=userId%>">
 
 
-                        <button type="submit" class="btn btn-outline-light delete-button"><i class="fa-sharp fa-solid fa-trash-arrow-up"></i></button>
+                        <button type="submit" class="btn btn-outline-light delete-button"><i
+                                class="fa-sharp fa-solid fa-trash-arrow-up"></i></button>
                     </div>
                 </div>
             </form>

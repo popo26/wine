@@ -112,7 +112,7 @@ passport.use(new GoogleStrategy({
     userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
   },
   function(accessToken, refreshToken, profile, cb) {
-    console.log(profile);
+    // console.log(profile);
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
       return cb(err, user);
     });
@@ -143,10 +143,12 @@ passport.use(
 
 
 const dislikes = [];
+const searchedList = [];
 const title = "";
+const wineName = "";
 
 app.get("/", function(req, res){
-    console.log("Home page");
+    // console.log("Home page");
     const title = "Home";
     res.render("home", {title:title});
 });
@@ -176,7 +178,7 @@ function(req, res){
 
 //Step added for Oath redirection to work to /wines/:id
 app.get("/wines", function(req,res){
-    console.log("Wines page without ID");
+    // console.log("Wines page without ID");
     user = req.user;
     id = req.user.id;
     res.redirect("/wines/" + id);
@@ -184,7 +186,7 @@ app.get("/wines", function(req,res){
 
 
 app.get("/register", function(req, res){
-    console.log("Register page");
+    // console.log("Register page");
     const title = "Register";
     res.render("register", {title:title});
 });
@@ -222,7 +224,7 @@ app.post("/register", function(req, res){
 
 
 app.get("/login", function(req,res) {
-    console.log("Login page");
+    // console.log("Login page");
     const title = "Login";
     res.render("login", {title:title});
 });
@@ -230,7 +232,7 @@ app.get("/login", function(req,res) {
 
 app.post("/login", function(req, res, next){
 
-    console.log("Posting login");
+    // console.log("Posting login");
 
     const user = new User({
         username:req.body.username,
@@ -260,11 +262,11 @@ app.post("/login", function(req, res, next){
 
 app.get("/wines/:id", function(req, res){
 
-    console.log("Wine GET page");
+    // console.log("Wine GET page");
     const title = "Wine";
 
     userId = req.params.id;
-    console.log(userId);
+    // console.log(userId);
 
     if (req.isAuthenticated()){
         User.findOne({_id: userId}, function(err, foundUser){
@@ -303,9 +305,15 @@ app.post("/wines/:id", function(req, res){
         user:userId
     })
 
-    wine.save()
-
-    res.redirect("/wines/" + userId);
+    wine.save(function(err){
+        if (err){
+            console.log(err);
+            alert("Wine name is required.\nPrice should be number.");
+            res.redirect("/wines/" + userId);
+        } else {
+            res.redirect("/wines/" + userId);
+        }
+    });
 })
 
 
@@ -319,10 +327,34 @@ app.post("/delete", function(req, res){
             res.redirect("/wines/" + userId);
         } else {
             console.log(err);
+            alert('Error. Please try again.');
+            res.redirect("/wines/" + userId);
         }
     });
 });
 
+
+
+app.post("/wines/:id/find", function(req, res){
+    // console.log("Wine Result page");
+    const title = "Found Wines";
+    const wineName = _.capitalize(req.body.searchWine);
+    userId = req.params.id;
+    // console.log("search item is :"+ req.body.searchWine);
+    
+    if (req.isAuthenticated()){
+            Wine.find({user:userId, name:{$regex:wineName}}, function(err, foundWines){
+            if(err){
+                console.log(err);
+            } else {
+                // console.log("foundWines: " + foundWines);
+                res.render("wines", {dislikeList: foundWines, userId:userId, title:title});
+            } 
+        });
+    } else {
+      res.redirect("/login");
+    }      
+});
 
 app.get('/logout', function(req, res, next) {
     req.logout(function(err) {
